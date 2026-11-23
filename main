@@ -1,0 +1,327 @@
+import time
+
+
+matrice = [
+    [' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ']
+]
+
+
+class Voiture:
+    def __init__(self, nom, taille):
+        self.nom = nom
+        self.taille = taille
+        self.matrice = matrice
+
+    def placementPlateau(self, orientation, y, x):
+        self.orientation = orientation
+        self.x = x
+        self.y = y
+        matrice[y][x] = self.nom
+
+        if self.taille == 2:
+            if self.orientation == "v":
+                matrice[y - 1][x] = self.nom
+            else:
+                matrice[y][x - 1] = self.nom
+        else:
+            if self.orientation == "v":
+                matrice[y - 1][x] = self.nom
+                matrice[y - 2][x] = self.nom
+            else:
+                matrice[y][x - 1] = self.nom
+                matrice[y][x - 2] = self.nom
+                
+    def deplacer(self, nb_cases, direction):
+        matrice = self.matrice
+        nouveau_x = self.x
+        nouveau_y = self.y
+
+        if self.orientation == "h":
+            if direction == 'droite':
+                nouveau_x += nb_cases
+            else:
+                nouveau_x -= nb_cases
+        else:
+            if direction == 'haut':
+                nouveau_y -= nb_cases
+            else:  
+                nouveau_y += nb_cases
+
+        for i in range(1, nb_cases + 1):
+
+            if self.orientation == "h":
+                x_test = self.x + (i if direction == 'droite' else -i)
+                y_test = self.y
+                cases = [(y_test, x_test-j) for j in range(self.taille)]
+
+            else:
+                y_test = self.y + (i if direction == 'bas' else -i)
+                x_test = self.x
+                cases = [(y_test-j, x_test) for j in range(self.taille)]
+
+            for ligne, colonne in cases:
+
+                if ligne < 0 or ligne > 5 or colonne < 0 or colonne > 5:
+                    print("La voiture sort du plateau !")
+                    return
+
+                if matrice[ligne][colonne] != " " and matrice[ligne][colonne] != self.nom:
+                    print("Une autre voiture bloque le passage !")
+                    return
+
+        if self.orientation == "h":
+            for i in range(self.taille):
+                matrice[self.y][self.x-i] = " "
+        else:
+            for i in range(self.taille):
+                matrice[self.y-i][self.x] = " "
+
+        self.x = nouveau_x
+        self.y = nouveau_y
+
+        if self.orientation == "h":
+            for i in range(self.taille):
+                matrice[self.y][self.x-i] = self.nom
+        else:
+            for i in range(self.taille):
+                matrice[self.y-i][self.x] = self.nom
+
+        print("Déplacement effectué !")
+
+    def getX(self):
+        if self.x == 5:
+            return True
+        
+    def getOrientation(self):
+        return self.orientation
+
+
+A = Voiture("A", 2)
+B = Voiture("B", 2)
+C = Voiture("C", 2)
+D = Voiture("D", 2)
+E = Voiture("E", 2)
+F = Voiture("F", 2)
+G = Voiture("G", 2)
+H = Voiture("H", 2)
+I = Voiture("I", 2)
+J = Voiture("J", 2)
+K = Voiture("K", 2)
+
+O = Voiture("O", 3)
+P = Voiture("P", 3)
+Q = Voiture("Q", 3)
+R = Voiture("R", 3)
+
+X = Voiture("X", 2)
+
+
+class Plateau:
+    def __init__(self, n: int):
+
+        if n == 1:
+            A.placementPlateau("v", 3, 5)
+            B.placementPlateau("v", 5, 0)
+            C.placementPlateau("v", 5, 2)
+            D.placementPlateau("h", 4, 5)
+            E.placementPlateau("h", 5, 5)
+            O.placementPlateau("h", 0, 4)
+            P.placementPlateau("h", 1, 2)
+            Q.placementPlateau("v", 3, 4)
+            R.placementPlateau("h", 3, 2)
+            X.placementPlateau("h", 2, 1)
+
+            for ligne in matrice:
+                print("+---" * 6 + "+")
+                for case in ligne:
+                    print("| " + case + " ", end="")
+                print("|")
+            print("+---" * 6 + "+")
+            
+            self.voiture = ["A", "B", "C", "D", "E", "O", "P", "Q", "R", "X"]
+
+        if n == 2:
+            A.placementPlateau("v", 1, 3)
+            B.placementPlateau("h", 0, 5)
+            C.placementPlateau("h", 1, 5)
+            D.placementPlateau("v", 3, 2)
+            E.placementPlateau("v", 3, 3)
+            F.placementPlateau("v", 4, 3)
+            G.placementPlateau("v", 3, 5)
+            H.placementPlateau("h", 3, 1)
+            I.placementPlateau("v", 5, 0)
+            J.placementPlateau("v", 5, 4)
+            K.placementPlateau("v", 5, 5)
+            O.placementPlateau("h", 4, 3)
+            P.placementPlateau("h", 5, 3)
+            X.placementPlateau("h", 2, 1)
+
+            for ligne in matrice:
+                print("+---" * 6 + "+")
+                for case in ligne:
+                    print("| " + case + " ", end="")
+                print("|")
+            print("+---" * 6 + "+")
+            
+            self.voiture = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "O", "P", "X"]
+
+        if n == 3:
+            A.placementPlateau("v", 1, 0)
+            B.placementPlateau("v", 1, 2)
+            C.placementPlateau("h", 0, 5)
+            D.placementPlateau("v", 3, 3)
+            E.placementPlateau("v", 3, 5)
+            F.placementPlateau("v", 4, 1)
+            G.placementPlateau("h", 4, 3)
+            H.placementPlateau("v", 5, 4)
+            I.placementPlateau("v", 5, 5)
+            J.placementPlateau("h", 5, 1)
+            K.placementPlateau("h", 5, 3)
+            O.placementPlateau("h", 1, 5)
+            P.placementPlateau("v", 4, 0)
+            X.placementPlateau("h", 2, 2)
+
+            for ligne in matrice:
+                print("+---" * 6 + "+")
+                for case in ligne:
+                    print("| " + case + " ", end="")
+                print("|")
+            print("+---" * 6 + "+")
+            
+            self.voiture = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "O", "P", "X"]
+
+        if n == 4:
+            A.placementPlateau("v", 1, 0)
+            B.placementPlateau("h", 0, 2)
+            C.placementPlateau("v", 1, 5)
+            D.placementPlateau("v", 2, 2)
+            E.placementPlateau("v", 3, 5)
+            F.placementPlateau("h", 3, 1)
+            G.placementPlateau("h", 3, 3)
+            H.placementPlateau("v", 4, 4)
+            I.placementPlateau("v", 5, 2)
+            O.placementPlateau("v", 2, 3)
+            P.placementPlateau("h", 5, 5)
+            X.placementPlateau("h", 2, 1)
+
+            for ligne in matrice:
+                print("+---" * 6 + "+")
+                for case in ligne:
+                    print("| " + case + " ", end="")
+                print("|")
+            print("+---" * 6 + "+")
+            
+            self.voiture = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "O", "P", "X"]
+
+    def afficher(self):
+        for ligne in matrice:
+            print("+---" * 6 + "+")
+            for case in ligne:
+                print("| " + case + " ", end="")
+            print("|")
+        print("+---" * 6 + "+")
+    
+    def getVoiture(self):
+        return self.voiture
+
+    def verif_orientation(self, orientation, voiture):
+        if voiture.orientation == "v":
+            if orientation == 'bas' or orientation == 'haut':
+                return True
+            else:
+                return False
+        else:
+            if orientation == 'gauche' or orientation == 'droite':
+                return True
+            else:
+                return False
+
+
+def reset(niveau):
+    global matrice
+    matrice = [
+        [' ', ' ', ' ', ' ', ' ', ' '],
+        [' ', ' ', ' ', ' ', ' ', ' '],
+        [' ', ' ', ' ', ' ', ' ', ' '],
+        [' ', ' ', ' ', ' ', ' ', ' '],
+        [' ', ' ', ' ', ' ', ' ', ' '],
+        [' ', ' ', ' ', ' ', ' ', ' ']
+    ]
+
+    Plateau(niveau)
+    print("Le niveau a été réinitialisé !")
+
+
+def demarrer():
+    print("======================================================================================================================================================"
+          "\n   Bienvenue dans notre jeu Rush Hour !"
+          "\n\nAvant de commencer, voici quelques consignes."
+          "\n\nTout d'abord, pour un meilleur confort de jeu, agrandissez la taille de la console afin d'avoir une vue d'ensemble de tout ce qui s'affiche."
+          "\nVotre but dans ce jeu est de faire arriver la voiture X au bout de sa ligne pour gagner la partie !"
+          "\n\nPour que votre experience de jeu se déroule sans accroc, faites attention à bien donner la lettre correspondant à la voiture à déplacer en MAJUSCULE."
+          "\nAu cas où vous seriez bloqué, écrivez 'reset' au lieu du nom d'une voiture pour relancer le jeu !"
+          "\n\n   Bonne partie et bonne chance !"
+          "\n\n    ------------------------------"
+          "\n   Signé : L'équipe de développement"
+          "\n======================================================================================================================================================\n\n")
+    
+    a = input("Choisissez la difficulté du jeu entre 1(simple) et 4 (difficile) : ")
+    
+    while a not in ["1", "2", "3", "4"]:
+        print("Difficulté incorrecte !")
+        a = input("Choisissez une difficulté entre 1 et 4 : ")
+
+    b = input("Écrire 'lancer' pour démarrer la partie : ")
+
+    while b != "lancer":
+        print("Erreur ! Veuillez réécrire 'lancer'.")
+        b = input("Écrire 'lancer' pour démarrer la partie : ")
+
+    for i in range(1, 4):
+        print("La partie va commencer...")
+        print(i)
+        time.sleep(1)
+
+    p1 = Plateau(int(a))
+
+    debut = time.time()  # Début du chronomètre
+
+    while True:
+        c = input("Choisissez la voiture à déplacer (en majuscule) ou écrivez 'reset' pour recommencer : ")
+
+        if c == "reset":
+            reset(int(a))
+            continue
+        while c not in p1.getVoiture():
+            c = input("Cette voiture n'existe pas, choisissez la voiture de nouveau : ")
+        
+        e = input("Choisir vers où aller (haut, bas, gauche, droite) : ")
+        
+        while p1.verif_orientation(e, globals()[c]) == False:
+            e = input("La direction n'est pas bonne, vérifier l'orthographe (haut, bas, gauche, droite) : ")
+
+        d = input("Choisir de combien de cases il faut déplacer la voiture : ")
+
+        while d not in ["0", "1", "2", "3", "4"]:
+            d = input("Erreur, choisir le déplacement de nouveau (entre 0 et 4) : ")
+
+        globals()[c].deplacer(int(d), e)
+        p1.afficher()
+
+        if X.getX() == True:
+            print("BRAVO ! Tu as gagné la partie !")
+
+            temps = int(time.time() - debut)
+            minutes = temps // 60
+            secondes = temps % 60
+
+            print("Temps réalisé :", minutes, "min et", secondes, "secondes")
+            break
+
+
+demarrer()
